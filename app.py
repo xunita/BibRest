@@ -59,6 +59,12 @@ def getBookC(collection):
     else:
         return make_response(jsonify(allbooks=[book.serialize() for book in books]), 200)
 
+def delBookFromCollection(isbn):
+    for col in collection:
+        if col.delBook(isbn):
+            return True
+    return False
+
 @app.route('/delbook/<int:isbn>', methods=['GET', 'DELETE'])
 def delBook(isbn):
     book = bib.getBookByIsbn(isbn)
@@ -66,7 +72,11 @@ def delBook(isbn):
         return make_response({"error": "Peut pas supprimer ce qui n'existe pas"}, 200)
     else:
         bib.delBook(isbn)
-        return make_response({"message": "Livre supprimé"}, 200)
+        col = delBookFromCollection(isbn)
+        if col:
+            return make_response({"message": "Livre supprimé de la collection"}, 200)
+        else:
+            return make_response({"error": "Impossible de supprimer"}, 200)
 
 @app.route('/createCollection/<string:nom>', methods=['GET', 'POST'])
 def createCollection(nom):
@@ -93,6 +103,7 @@ def allBooksCollection(nom):
         response = make_response(jsonify(allbooks=[book.serialize() for book in col[0].allBooks()]), 200)
         
     return response
+
 
 @app.route('/addBookToCollection/<string:nom>/<int:isbn>', methods=['GET', 'POST'])
 def addBookToCollection(nom, isbn):
