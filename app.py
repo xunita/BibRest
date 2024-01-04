@@ -74,7 +74,7 @@ def delBook(isbn):
         bib.delBook(isbn)
         col = delBookFromCollection(isbn)
         if col:
-            return make_response({"message": "Livre supprimé de la collection"}, 200)
+            return make_response({"message": "Livre supprimé de la bibliothèque"}, 200)
         else:
             return make_response({"error": "Impossible de supprimer"}, 200)
 
