@@ -121,6 +121,7 @@ def delBookFromCollection(nom, isbn):
             if deleted:
                books = bib.getBookByIsbn(isbn)
                books[0].setCollection("")
+               return make_response({"message": "Livre supprimé de la collection"}, 200)  
             else:
                 return make_response({"error": "Livre non supprimé"}, 200)
         else:
