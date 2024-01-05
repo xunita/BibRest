@@ -147,8 +147,9 @@ def delCollection(nom):
     col = list(filter(lambda l: l.getName() == nom, collection))
     if col:
         try: 
-            for book in col[0].allBooks():
-                book.setCollection("")
+            for book in bib.allBooks():
+                if book.getCollection() == nom:
+                    book.setCollection("")
             collection.pop(collection.index(col[0]))
             return make_response({"message": "Collection supprimée"}, 200)
         except:
