@@ -115,7 +115,10 @@ def addBookToCollection(nom, isbn):
         if len(book) != 0:
             # check if book is already in any collection trough all collections
             for coll in collection:
+                existsomewhere = False
                 if coll.getBook(isbn) != False:
+                    existsomewhere = True
+                if existsomewhere:
                     return make_response({"error": "Livre déjà dans une collection"}, 200)
                 else:
                     added = col[0].addBook(book[0].getTitle(), book[0].getAuthor(), book[0].getISBN(), book[0].getGenre())
