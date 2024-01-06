@@ -113,13 +113,12 @@ def addBookToCollection(nom, isbn):
     book = list(filter(lambda l: l.getISBN() == isbn, bib.allBooks()))
     if col:
         if book:
-            colbook = list(filter(lambda l: l.getISBN() == isbn, col[0].allBooks()))    
-            if colbook:
-                return make_response({"error": "Livre déjà dans la collection"}, 200)
+            book[0].setCollection(nom)
+            added = col[0].addBook(book[0].getTitle(), book[0].getAuthor(), book[0].getISBN(), book[0].getGenre())
+            if added:
+                return make_response({"message": "Livre ajouté à la collection"}, 200) 
             else:
-                col[0].addBook(book[0].getTitle(), book[0].getAuthor(), book[0].getISBN(), book[0].getGenre())
-                book[0].setCollection(nom)
-                return make_response({"message": "Livre ajouté à la collection"}, 200)
+                return make_response({"exist": "Livre déjà dans la collection"}, 200)
         else:
             return make_response({"error": "Livre non trouvé"}, 200)  
     else:
