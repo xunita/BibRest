@@ -111,15 +111,21 @@ def allBooksCollection(nom):
 def addBookToCollection(nom, isbn):
     col = list(filter(lambda l: l.getName() == nom, collection))
     book = list(filter(lambda l: l.getISBN() == isbn, bib.allBooks()))
-    if col:
-        if book:
-            added = col[0].addBook(book[0].getTitle(), book[0].getAuthor(), book[0].getISBN(), book[0].getGenre())
-            if added:
-                book[0].setCollection(nom)
-                return make_response({"message": "Livre ajouté à la collection"}, 200) 
-            else:
-                return make_response({"exist": "Livre déjà dans la collection"}, 200)
+    if len(col) != 0:
+        if len(book) != 0:
+            # check if book is already in any collection trough all collections
+            for col in collection:
+                if col.getBook(isbn) != False:
+                    return make_response({"error": "Livre déjà dans une collection"}, 200)
+                else:
+                    added = col[0].addBook(book[0].getTitle(), book[0].getAuthor(), book[0].getISBN(), book[0].getGenre())
+                    if added:
+                        book[0].setCollection(nom)
+                        return make_response({"message": "Livre ajouté à la collection"}, 200) 
+                    else:
+                        return make_response({"error": "N'a pas pu ajouter dans la collection"}, 200)
         else:
+            
             return make_response({"error": "Livre non trouvé"}, 200)  
     else:
         return make_response({"error": "Collection not found"}, 200)
@@ -127,9 +133,9 @@ def addBookToCollection(nom, isbn):
 @app.route('/delBookFromCollection/<string:nom>/<int:isbn>', methods=['GET', 'DELETE'])
 def delBookFromCollection(nom, isbn):
     col = list(filter(lambda l: l.getName() == nom, collection))
-    if col:
+    if len(col) != 0:
         book = list(filter(lambda l: l.getISBN() == isbn, col[0].allBooks()))
-        if book:
+        if len(book) != 0:
             deleted = col[0].delBook(isbn)
             if deleted:
                books = bib.getBookByIsbn(isbn)
@@ -145,7 +151,7 @@ def delBookFromCollection(nom, isbn):
 @app.route('/delCollection/<string:nom>', methods=['GET', 'DELETE'])
 def delCollection(nom):
     col = list(filter(lambda l: l.getName() == nom, collection))
-    if col:
+    if len(col) != 0:
         try: 
             for book in bib.allBooks():
                 if book.getCollection() == nom:
