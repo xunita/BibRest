@@ -114,19 +114,19 @@ def addBookToCollection(nom, isbn):
     if len(col) != 0:
         if len(book) != 0:
             # check if book is already in any collection trough all collections
+            existsomewhere = False
             for coll in collection:
-                existsomewhere = False
                 if coll.getBook(isbn) != False:
                     existsomewhere = True
-                if existsomewhere:
-                    return make_response({"error": "Livre déjà dans une collection"}, 200)
+            if existsomewhere:
+                return make_response({"error": "Livre déjà dans une collection"}, 200)
+            else:
+                added = col[0].addBook(book[0].getTitle(), book[0].getAuthor(), book[0].getISBN(), book[0].getGenre())
+                if added:
+                    book[0].setCollection(nom)
+                    return make_response({"message": "Livre ajouté à la collection"}, 200) 
                 else:
-                    added = col[0].addBook(book[0].getTitle(), book[0].getAuthor(), book[0].getISBN(), book[0].getGenre())
-                    if added:
-                        book[0].setCollection(nom)
-                        return make_response({"message": "Livre ajouté à la collection"}, 200) 
-                    else:
-                        return make_response({"error": "N'a pas pu ajouter dans la collection"}, 200)
+                    return make_response({"error": "N'a pas pu ajouter dans la collection"}, 200)
         else:
             
             return make_response({"error": "Livre non trouvé"}, 200)  
